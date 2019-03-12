@@ -9,6 +9,7 @@
 #include "model.h"
 #include "camera.h"
 #include "utils.h"
+#include "process_points.h"
 
 #include <iostream>
 
@@ -20,9 +21,12 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 900;
 const unsigned int SCR_HEIGHT = 720;
+//远近裁剪面
+const float CAM_NEAR = 1.0f;
+const float CAM_FAR = 20.0f;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -80,9 +84,27 @@ int main()
 	// -----------
 	Model ourModel("obj/ball/3.obj");//模型
 	// 获取位置和颜色信息
-	vector<vector<float>> particles = get_3D_param();
-	cout << particles.size() << endl;
+	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, CAM_NEAR, CAM_FAR);
+	glm::mat4 inverse_projection = glm::inverse(projection);
+	const int total_frames = 1; // 总帧数
+	const int start_idx = 170; // 重建帧的开始	
+	vector<vector<point_3D>> frames_points;
+	vector<Mat> rgbsMat;
+	vector<ProcessPoints> frames_pps;
+	
+	for (int i = start_idx; i < total_frames + start_idx; ++i) {
+		vector<MyPoint> m_pos;
+		vector<MyPoint> m_color;
+		get_3D_param(inverse_projection, i, m_pos, m_color);// 获取当前帧的点的信息
+		ProcessPoints pps(m_pos, m_color);
+		frames_pps.push_back(pps);
+		Mat rgbMat = get_rgbMat(i);// 获取当前帧
+		rgbsMat.push_back(rgbMat);
+	}
+	cout << frames_pps[0].points_num() << endl;
+	// 开始处理点云
 
+	int num_frame = 0; // 当前帧，用来显示每一帧和当前帧的所有点
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -106,35 +128,36 @@ int main()
 		ourShader.use();
 
 		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 1.0f, 20.0f);
+		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, CAM_NEAR, CAM_FAR);
 		glm::mat4 view = camera.GetViewMatrix();
-		ourShader.setMat4("projection", projection);
+		ourShader.setMat4("projection", projection); 
 		ourShader.setMat4("view", view);
 
-		vector<glm::vec3> pos;
-		glm::mat4 inverse_view = glm::inverse(view);
-		glm::mat4 inverse_projection = glm::inverse(projection);
-		for (int i = 0; i < particles.size(); ++i) {
-			float x = particles[i][3], y = particles[i][4], z = particles[i][5];
-			glm::vec4 p = glm::vec4(x, y, z, -z);
-			glm::vec4 pw = inverse_projection * p;
-			pos.push_back(glm::vec3(pw.x, pw.y, pw.z));
-		}
-
+		ProcessPoints pps = frames_pps[num_frame];
 		// render the loaded model
-		for (int i = 0; i < particles.size(); ++i) {	
+		for (int i = 0; i < pps.points_num(); ++i) {
+			// point3d 位置
 			glm::mat4 model;
 			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-			model = glm::translate(model, pos[i]);
-			model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));	// it's a bit too big for our scene, so scale it down
+			model = glm::translate(model, pps.pos(i));
+			model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));	// it's a bit too big for our scene, so scale it down
 			ourShader.setMat4("model", model);
+			// point 颜色
+			ourShader.setVec3("pointColor", pps.color(i));
 			ourModel.Draw(ourShader);
 		}
-		
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-		// -------------------------------------------------------------------------------
+
+		// opencv: 显示重建的当前帧
+		imshow("window", rgbsMat[num_frame]);
+		// glfw:渲染出当前帧
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		// 更新相机位置从不同角度观察重建的效果
+		// updateCamera(camera);
+		// 更新当前帧idx
+		if (++num_frame == total_frames) num_frame = 0;
+		//cout << "frame:" << num_frame << endl;
+			
 	}
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
@@ -181,7 +204,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 
 	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to tops
 
 	lastX = xpos;
 	lastY = ypos;

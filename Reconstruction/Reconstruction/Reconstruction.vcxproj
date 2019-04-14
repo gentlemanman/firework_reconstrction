@@ -135,6 +135,8 @@
   <ItemGroup>
     <None Include="1.model_loading.fs" />
     <None Include="1.model_loading.vs" />
+    <None Include="insert.fs" />
+    <None Include="insert.vs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="记录.txt" />

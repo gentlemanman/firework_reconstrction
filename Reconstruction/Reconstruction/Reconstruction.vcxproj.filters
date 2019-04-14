@@ -61,6 +61,12 @@
     <None Include="1.model_loading.vs">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="insert.vs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="insert.fs">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="记录.txt">

@@ -49,7 +49,7 @@ public:
     }
 
     // render the mesh
-    void Draw(Shader shader) 
+    void Draw(Shader shader, int amount = 1) 
     {
         // bind appropriate textures
         unsigned int diffuseNr  = 1;
@@ -79,7 +79,9 @@ public:
         
         // draw mesh
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		//实例化绘制，需要给出绘制的个数
+		glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, amount);
         glBindVertexArray(0);
 
         // always good practice to set everything back to defaults once configured.

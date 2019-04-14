@@ -16,9 +16,8 @@ Mat get_rgbMat(int num) {
 	//imshow("window", img);
 }
 
-MyPoint vec2myp(glm::vec3 v) { return MyPoint(v.x, v.y, v.z); }
 
-void get_3D_param(glm::mat4 inverse_projection, int num, vector<MyPoint>& m_pos, vector<MyPoint>& m_color) {
+void get_3D_param(glm::mat4 inverse_projection, int num, vector<glm::vec3>& m_pos, vector<glm::vec3>& m_color) {
 	//vector<point_3D> frame_points;
 	stringstream ss;
 	ss << num;
@@ -57,11 +56,32 @@ void get_3D_param(glm::mat4 inverse_projection, int num, vector<MyPoint>& m_pos,
 				glm::vec4 p_e = inverse_projection * p_c;
 				tmp_pos = glm::vec3(p_e); //取出x, y, z作为当前点的位置
 				// cout << g << " " << b << " " << r << " " << depth << endl;
-				m_pos.push_back(vec2myp(tmp_pos));
-				m_color.push_back(vec2myp(tmp_color));
+				m_pos.push_back(tmp_pos);
+				m_color.push_back(tmp_color);
 			}
 		}
 	}
+}
+
+// 插值
+const int insert_num = 5;
+vector<glm::vec3> Interpolation(vector<vector<int>>& insert_idx, vector<glm::vec3>& frame_pos) {
+	int num = insert_idx.size();
+	vector<glm::vec3> insert;
+	for (int i = 0; i < num; ++i) {
+		for (int j = 0; j < insert_idx[i].size(); ++j) {
+			int idx = insert_idx[i][j];
+			glm::vec3 cur_pos = frame_pos[i];
+			glm::vec3 insert_pos = frame_pos[idx];
+			glm::vec3 all = insert_pos - cur_pos;
+			glm::vec3 pre = glm::vec3(all[0] / (insert_num + 1), all[1] / (insert_num + 1), all[2] / (insert_num + 1));
+			for (int k = 1; k <= 5; k++) {
+				glm::vec3 tmp = cur_pos + glm::vec3(pre[0] * k, pre[1] * k, pre[2] * k);
+				insert.push_back(tmp);
+			}
+		}
+	}
+	return insert;
 }
 
 //相机围绕中心的旋转获取新的位置

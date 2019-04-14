@@ -1,5 +1,5 @@
 #pragma once
-#define PI 3.1415927f
+#define PI 3.141592653589793238462643383279502
 
 #include <iostream>
 #include <array>
@@ -18,8 +18,7 @@ using namespace std;
 using namespace cv;
 
 #include "kdtree.h"
-class MyPoint : public std::array<double, 3>
-{
+class MyPoint : public std::array<double, 3>{
 public:
 
 	// dimension of space (or "k" of k-d tree)
@@ -50,38 +49,41 @@ struct point_3D {
 	glm::vec3 color = glm::vec3(0.0, 0.0, 0.0);
 	bool isValid = false;
 };
+const double Radius = 0.1;
+const double MinAngle = 20.0;
+const double MaxAngle = 160.0;
 
 class ProcessPoints {
 public:
 	ProcessPoints() {}
-	ProcessPoints(vector<MyPoint> points_pos, vector<MyPoint> points_color) : points_pos_(points_pos), points_color_(points_color) {
+	ProcessPoints(vector<glm::vec3> points_pos, vector<glm::vec3> points_color) : glm_points_pos_(points_pos), points_color_(points_color){
+		InitData();
 		PointsInsertIdx();
 	}
 	~ProcessPoints(){}
 	vector<vector<int>> insert_idx() { return points_insert_idx_; }
-	int points_num() { return points_pos_.size(); }
-	glm::vec3 pos(int i) { return myp2vec(points_pos_[i]); }
-	glm::vec3 color(int i) { return myp2vec(points_color_[i]); }
+	int points_num() { return glm_points_pos_.size(); }
+	vector<glm::vec3> frame_pos() { return glm_points_pos_; }
+	vector<glm::vec3> frame_color() { return points_color_; }
 
 private:
-	vector<MyPoint> points_pos_; // 每一帧的点位置信息
-	vector<MyPoint> points_color_; // 每一帧的点颜色信息
+	vector<MyPoint> my_points_pos_; // 每一帧的点位置信息
+	vector<glm::vec3> glm_points_pos_;
+	vector<glm::vec3> points_color_; // 每一帧的点颜色信息
 	vector<vector<int>> points_insert_idx_; // 每一帧的点对应插值索引
-	const double radius_ = 0.2; // 搜寻半径
-
 	int min_distance_idx_ = 0; //记录一个据当前距离最小点的索引
-	const int num_insert = 5; // 插值的数量
-	
-	const float angle_min_ = 30.0;
-	const float angle_max_ = 150.0;
 
+	// 初始化操作，将数据格式转换成可用
+	void InitData();
 	// 计算一帧的插值点索引
 	void PointsInsertIdx();
 	// 在半径范围内的点进一步根据角度信息筛选，同时设置是否遍历
 	vector<int> AngleSearch(const vector<point_3D>& frame_points, int point_idx, vector<int>& point_radius_idx);
 	// 计算两个位置间的距离
-	float TwoPosDistance(const glm::vec3& p1, const glm::vec3& p2);
-	// 计算两个向量的夹角
-	float TwoVecAngle(const glm::vec3& v1, const glm::vec3& v2);
+	double TwoPosDistance(const glm::vec3& p1, const glm::vec3& p2);
+	// 计算两个向量的夹角,返回角度值
+	double TwoVecAngle(const glm::dvec3& v1, const glm::dvec3& v2);
+	
 	glm::vec3 myp2vec(MyPoint p) { return glm::vec3(p[0], p[1], p[2]); }
+	MyPoint vec2myp(glm::vec3 v) { return MyPoint(v.x, v.y, v.z); }
 };

@@ -5,27 +5,15 @@ e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\op
 e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\opencv2\core\persistence.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\opencv2\core\utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\opencv2\core\utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-e:\firework_reconstrction\reconstruction\reconstruction\utils.h(80): warning C4305: “初始化”: 从“double”到“float”截断
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(114): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(201): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(202): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(206): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(207): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(209): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(210): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(219): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-glfw3.lib(context.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(context.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(init.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(init.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(input.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(input.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(monitor.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(monitor.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(vulkan.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(vulkan.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(window.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(window.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_init.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_init.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_joystick.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_joystick.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_monitor.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_monitor.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_time.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_time.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_tls.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_tls.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_window.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_window.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(wgl_context.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(wgl_context.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(egl_context.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(egl_context.obj)”或在“E:\firework_reconstrction\Reconstruction\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(72): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(100): warning C4305: “初始化”: 从“double”到“float”截断
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(139): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(209): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(295): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(296): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(300): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(301): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(303): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(304): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(313): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
   Reconstruction.vcxproj -> E:\firework_reconstrction\Reconstruction\Debug\Reconstruction.exe

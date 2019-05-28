@@ -12,7 +12,7 @@
 #include "process_points.h"
 
 #include <iostream>
-
+#include <fstream>
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -24,33 +24,26 @@ const unsigned int SCR_HEIGHT = 720;
 //远近裁剪面
 const float CAM_NEAR = 1.0f;
 const float CAM_FAR = 20.0f;
-
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, -1.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
-
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
+// 是否暂停当前帧
+bool is_pause = false;
 
 int main()
 {
 	// glfw: initialize and configure
-	// ------------------------------
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
-#endif
-
 	// glfw window creation
-	// --------------------
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
 	if (window == NULL)
 	{
@@ -67,153 +60,132 @@ int main()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// glad: load all OpenGL function pointers
-	// ---------------------------------------
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
 	// configure global opengl state
-	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
+	// 背面剔除
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	// build and compile shaders
-	// -------------------------
 	Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
-	Shader insertShader("insert.vs", "insert.fs");
+	//Shader insertShader("insert.vs", "insert.fs");
 
 	// load models
-	// -----------
-	Model ourModel("obj/ball/3.obj");//模型
-	// 获取位置和颜色信息
-	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, CAM_NEAR, CAM_FAR);
+	Model ourModel("obj/ball/1.obj"); // 模型
+
+	// 一、开始处理原始数据，获取位置和颜色
+	int wid = 480, height = 480;
+	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)wid / (float)height, CAM_NEAR, CAM_FAR);
 	glm::mat4 inverse_projection = glm::inverse(projection);
-	const int total_frames = 1; // 总帧数
-	const int start_idx = 170; // 重建帧的开始	
+	const int total_frames = 40; // 总帧数
+	const int start_idx = 0; // 重建帧的开始	
+	cout << "开始的索引:" << start_idx << "  总共的帧数:" << total_frames << endl;
 	vector<vector<point_3D>> frames_points;
 	vector<Mat> rgbsMat;
 	vector<ProcessPoints> frames_pps;
 	
 	for (int i = start_idx; i < total_frames + start_idx; ++i) {
+		cout << "处理原始rgb和depth中：" << i - start_idx << "/" << total_frames<< endl;
 		vector<glm::vec3> m_pos;
 		vector<glm::vec3> m_color;
 		get_3D_param(inverse_projection, i, m_pos, m_color);// 获取当前帧的点的信息
-		ProcessPoints pps(m_pos, m_color);
+		ProcessPoints pps(m_pos, m_color, is_Interpolation);
 		frames_pps.push_back(pps);
 		// 获取当前帧
 		Mat rgbMat = get_rgbMat(i);
 		rgbsMat.push_back(rgbMat);
 	}
-	//获取当前帧的插值点
+	// 二、获取所有帧的插值点
 	vector<vector<glm::vec3>> insert_pos;
 	vector<vector<glm::vec3>> insert_color;
-	for (int i = 0; i < total_frames; ++i) {
-		vector<vector<int>> insert_idx = frames_pps[i].insert_idx(); // 获取当前帧的插值点索引
-		vector<glm::vec3> frame_pos = frames_pps[i].frame_pos();
-		vector<glm::vec3> frame_color = frames_pps[i].frame_color();
-		//获取插值点位置
-		vector<glm::vec3> frame_insert_pos = Interpolation(insert_idx, frame_pos);
-		insert_pos.push_back(frame_insert_pos);
-		//获取插值点颜色
-		vector<glm::vec3> frame_insert_color = Interpolation(insert_idx, frame_color);
-		insert_color.push_back(frame_insert_color);
+	if(is_Interpolation)
+		Interpolation(frames_pps, insert_pos, insert_color);// 计算每一帧的插值点
+	
+	// 三、将点信息保存至文件(开辟一个新线程来写文件)
+	if (is_SavePointsToTxt) {
+		thread thread_read(SavePointsToTxt, ref(frames_pps), ref(insert_pos), ref(insert_color), start_idx); thread_read.detach();
+		//SavePointsToTxt(frames_pps, insert_pos, insert_color, start_idx);
 	}
-
-	///将所有数据写入
-	// 获取第一帧的原始数据
-	ProcessPoints pps0 = frames_pps[0];
-	vector<glm::vec3> pos0 = pps0.frame_pos(); // 获取当前帧全部位置
-	vector<glm::vec3> color0 = pps0.frame_color(); // 获取当前帧全部颜色
-	// 获取第一帧插值数据
-	vector<glm::vec3> insert_pos0 = insert_pos[0];
-	vector<glm::vec3> insert_color0 = insert_color[0];
-	insert_pos0.clear();
-	// 总共需要实例化的数量
-	int amount = pos0.size() + insert_pos0.size();
-	glm::mat4* modelMatrices = new glm::mat4[amount];
-	glm::vec3* colors = new glm::vec3[amount];
-	// 原始数据
-	for (int i = 0; i < pos0.size(); i++) {
-		// 位置信息
-		glm::mat4 tmp_model;
-		tmp_model = glm::translate(tmp_model, pos0[i]);
-		tmp_model = glm::scale(tmp_model, glm::vec3(0.15f, 0.15f, 0.15f));
-		modelMatrices[i] = tmp_model;
-		// 颜色信息
-		colors[i] = color0[i];
-	}
-	// 插值数据
-	for (int i = pos0.size(); i < amount; ++i) {
-		int j = i - pos0.size();
-		// 插值位置信息
-		glm::mat4 tmp_model;
-		tmp_model = glm::translate(tmp_model, insert_pos0[j]);
-		tmp_model = glm::scale(tmp_model, glm::vec3(0.15f, 0.15f, 0.15f));
-		modelMatrices[i] = tmp_model;
-		// 插值颜色信息
-		colors[i] = insert_color0[j];
-	}
-
-	// 定义新的buffer_pos
+	
+	// 四、形成buffer数据
+	vector<glm::mat4*> frames_modelMatrices;
+	vector<glm::vec3*> frames_colors;
+	vector<int> frames_amount;
+	GenBufferData(frames_pps, insert_pos, insert_color, frames_modelMatrices, frames_colors, frames_amount);
+	
+	// 在渲染循环外，定义数据的buffer
 	unsigned int buffer_pos;
 	glGenBuffers(1, &buffer_pos);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer_pos);
-	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
-	// 通过顶点属性传递数据，超过vec4的大小，要使用新方式。
-	for (unsigned int i = 0; i < ourModel.meshes.size(); ++i) {
-		unsigned int VAO = ourModel.meshes[i].VAO;
-		glBindVertexArray(VAO);
-		GLsizei vec4Size = sizeof(glm::vec4);
-		// 位置数据
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(vec4Size));
-		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-		// 设置绘制一个实例后更新数据
-		glVertexAttribDivisor(3, 1);
-		glVertexAttribDivisor(4, 1);
-		glVertexAttribDivisor(5, 1);
-		glVertexAttribDivisor(6, 1);
-		glBindVertexArray(0);
-	}
-
+	
 	unsigned int buffer_color;
 	glGenBuffers(1, &buffer_color);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer_color);
-	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::vec3), &colors[0], GL_STATIC_DRAW);
-	for (unsigned int i = 0; i < ourModel.meshes.size(); ++i) {
-		unsigned int VAO = ourModel.meshes[i].VAO;
-		glBindVertexArray(VAO);
-		glEnableVertexAttribArray(7);
-		glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
-		glVertexAttribDivisor(7, 1);
-		glBindVertexArray(0);
-	}
-
-	cout << "amount:" << amount << endl;
-	cout << "meshes size:" << ourModel.meshes.size() << endl;
-	int num_frame = 0; // 当前帧，用来显示每一帧和当前帧的所有点
+	
+	int cur_frame = 0; // 当前帧，用来显示每一帧和当前帧的所有点
+	bool first_frame = true;
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
+		Sleep(50);
+		// 由于每一帧的数据传递不一样，需要把数据传递放到渲染循环中
+		int cur_amount = frames_amount[cur_frame];
+		glm::mat4* cur_modelMatrices = frames_modelMatrices[cur_frame];
+		glm::vec3* cur_colors = frames_colors[cur_frame];
+		// 定义新的buffer_pos
+		glBindBuffer(GL_ARRAY_BUFFER, buffer_pos);
+		glBufferData(GL_ARRAY_BUFFER, cur_amount * sizeof(glm::mat4), &cur_modelMatrices[0], GL_STATIC_DRAW);
+		// 通过顶点属性传递数据，超过vec4的大小，要使用新方式。
+		for (unsigned int i = 0; i < ourModel.meshes.size(); ++i) {
+			unsigned int VAO = ourModel.meshes[i].VAO;
+			glBindVertexArray(VAO);
+			GLsizei vec4Size = sizeof(glm::vec4);
+			// 位置数据
+			glEnableVertexAttribArray(3);
+			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+			glEnableVertexAttribArray(4);
+			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(vec4Size));
+			glEnableVertexAttribArray(5);
+			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+			glEnableVertexAttribArray(6);
+			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+			// 设置绘制一个实例后更新数据
+			glVertexAttribDivisor(3, 1);
+			glVertexAttribDivisor(4, 1);
+			glVertexAttribDivisor(5, 1);
+			glVertexAttribDivisor(6, 1);
+			glBindVertexArray(0);
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, buffer_color);
+		glBufferData(GL_ARRAY_BUFFER, cur_amount * sizeof(glm::vec3), &cur_colors[0], GL_STATIC_DRAW);
+		for (unsigned int i = 0; i < ourModel.meshes.size(); ++i) {
+			unsigned int VAO = ourModel.meshes[i].VAO;
+			glBindVertexArray(VAO);
+			glEnableVertexAttribArray(7);
+			glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+			glVertexAttribDivisor(7, 1);
+			glBindVertexArray(0);
+		}
+		// 更新相机位置从不同角度观察重建的效果
+		if (first_frame) {
+			// first_frame = false;
+			updateCamera(camera);
+		}
 		//cout << "FPS:" << 1 / deltaTime<< endl;
 		// per-frame time logic
-		// --------------------
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
 		// input
-		// -----
 		processInput(window);
 
 		// render
-		// ------
-		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// don't forget to enable shader before setting uniforms
@@ -227,21 +199,24 @@ int main()
 		//绘制
 		for (unsigned int i = 0; i < ourModel.meshes.size(); i++) {
 			glBindVertexArray(ourModel.meshes[i].VAO);
-			glDrawElementsInstanced(GL_TRIANGLES, ourModel.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount);
+			glDrawElementsInstanced(GL_TRIANGLES, ourModel.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, cur_amount);
 			glBindVertexArray(0);
 		}		
 		
 		// opencv: 显示重建的当前帧
-		imshow("window", rgbsMat[num_frame]);
+		imshow("window", rgbsMat[cur_frame]);
 		// glfw:渲染出当前帧
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		// 更新相机位置从不同角度观察重建的效果
-		// updateCamera(camera);
+		// 是否保存当前帧截图
+		if (is_Screenshot) {
+			SaveScreenshot(cur_frame + start_idx);
+			if (cur_frame + 1 == total_frames) is_Screenshot = !is_Screenshot;
+		}
 		// 更新当前帧idx
-		if (++num_frame == total_frames) num_frame = 0;
-		//cout << "frame:" << num_frame << endl;
-			
+		if (!is_pause) {
+			if (++cur_frame == total_frames) cur_frame = 0;
+		}	
 	}
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
@@ -265,6 +240,8 @@ void processInput(GLFWwindow *window)
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		is_pause = !is_pause;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

@@ -69,8 +69,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="记录.txt">
-      <Filter>源文件</Filter>
-    </Text>
+    <Text Include="记录.zh" />
   </ItemGroup>
 </Project>

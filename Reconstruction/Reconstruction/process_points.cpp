@@ -32,6 +32,29 @@ void ProcessPoints::PointsInsertIdx() {
 	}
 }
 
+void ProcessPoints::EasyPointsInsertIdx() {
+	kdt::KDTree<MyPoint> kdtree(my_points_pos_);
+	int num_points = my_points_pos_.size();
+	vector<bool> visited(num_points, false);
+	for (size_t i = 0; i < num_points; ++i) {
+		vector<int> insert_idx;
+		MyPoint query = my_points_pos_[i];
+		// vector<int> knn_idx = kdtree.knnSearch(query, 10);
+		double r = 0.048;
+		vector<int> knn_idx = kdtree.radiusSearch(query, r);
+		if(knn_idx.size() > 5)
+			knn_idx.erase(knn_idx.begin(), knn_idx.begin() + 5);
+		/*
+		for (auto idx : knn_idx) {
+			if (idx == i || visited[idx] == true) continue;
+			insert_idx.push_back(idx);
+		}
+		visited[i] = true;
+		*/
+		points_insert_idx_.push_back(knn_idx);
+	}
+}
+
 void ProcessPoints::InitData() {
 	for (auto pos : glm_points_pos_) {
 		my_points_pos_.push_back(vec2myp(pos)); //glm::vec3->MyPoint

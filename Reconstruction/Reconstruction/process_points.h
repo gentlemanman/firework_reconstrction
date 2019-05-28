@@ -49,16 +49,22 @@ struct point_3D {
 	glm::vec3 color = glm::vec3(0.0, 0.0, 0.0);
 	bool isValid = false;
 };
-const double Radius = 0.1;
-const double MinAngle = 20.0;
-const double MaxAngle = 160.0;
+
+static double Radius = 0.05;
+const double MinAngle = 30.0;
+const double MaxAngle = 150.0;
+
 
 class ProcessPoints {
 public:
 	ProcessPoints() {}
-	ProcessPoints(vector<glm::vec3> points_pos, vector<glm::vec3> points_color) : glm_points_pos_(points_pos), points_color_(points_color){
+	ProcessPoints(vector<glm::vec3> points_pos, vector<glm::vec3> points_color, bool is_Interpolation) : glm_points_pos_(points_pos), points_color_(points_color){
 		InitData();
-		PointsInsertIdx();
+		// 判断是否需要获取插值的索引
+		if (is_Interpolation) {
+			//PointsInsertIdx();
+			EasyPointsInsertIdx();
+		}
 	}
 	~ProcessPoints(){}
 	vector<vector<int>> insert_idx() { return points_insert_idx_; }
@@ -77,6 +83,7 @@ private:
 	void InitData();
 	// 计算一帧的插值点索引
 	void PointsInsertIdx();
+	void EasyPointsInsertIdx();
 	// 在半径范围内的点进一步根据角度信息筛选，同时设置是否遍历
 	vector<int> AngleSearch(const vector<point_3D>& frame_points, int point_idx, vector<int>& point_radius_idx);
 	// 计算两个位置间的距离

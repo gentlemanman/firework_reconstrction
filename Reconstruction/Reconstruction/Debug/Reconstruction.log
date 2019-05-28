@@ -5,15 +5,25 @@ e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\op
 e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\opencv2\core\persistence.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\opencv2\core\utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 e:\firework_reconstrction\reconstruction\reconstruction\includeandlib\include\opencv2\core\utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-e:\firework_reconstrction\reconstruction\reconstruction\utils.h(72): warning C4018: “<”: 有符号/无符号不匹配
-e:\firework_reconstrction\reconstruction\reconstruction\utils.h(100): warning C4305: “初始化”: 从“double”到“float”截断
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(139): warning C4018: “<”: 有符号/无符号不匹配
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(209): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(295): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(296): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(300): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(301): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(303): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(304): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(313): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(82): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(141): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(146): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(160): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(179): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(224): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(227): warning C4018: “<”: 有符号/无符号不匹配
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(253): warning C4305: “初始化”: 从“double”到“float”截断
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(261): warning C4305: “初始化”: 从“double”到“float”截断
+e:\firework_reconstrction\reconstruction\reconstruction\utils.h(264): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(180): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(262): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(263): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(267): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(268): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(270): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(271): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(280): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+  正在生成代码...
+  正在跳过...(未检测到相关更改)
+  process_points.cpp
   Reconstruction.vcxproj -> E:\firework_reconstrction\Reconstruction\Debug\Reconstruction.exe

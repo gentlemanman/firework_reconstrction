@@ -50,7 +50,7 @@ struct point_3D {
 	bool isValid = false;
 };
 
-static double Radius = 0.05;
+static double Radius = 0.03; //0.055
 const double MinAngle = 30.0;
 const double MaxAngle = 150.0;
 

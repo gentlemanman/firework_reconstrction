@@ -13,17 +13,13 @@ e:\firework_reconstrction\reconstruction\reconstruction\utils.h(179): warning C4
 e:\firework_reconstrction\reconstruction\reconstruction\utils.h(224): warning C4018: “<”: 有符号/无符号不匹配
 e:\firework_reconstrction\reconstruction\reconstruction\utils.h(227): warning C4018: “<”: 有符号/无符号不匹配
 e:\firework_reconstrction\reconstruction\reconstruction\utils.h(253): warning C4305: “初始化”: 从“double”到“float”截断
-e:\firework_reconstrction\reconstruction\reconstruction\utils.h(261): warning C4305: “初始化”: 从“double”到“float”截断
 e:\firework_reconstrction\reconstruction\reconstruction\utils.h(264): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(180): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(262): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(263): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(267): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(268): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(270): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(271): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(280): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-  正在生成代码...
-  正在跳过...(未检测到相关更改)
-  process_points.cpp
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(181): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(277): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(278): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(282): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(283): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(285): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(286): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\firework_reconstrction\reconstruction\reconstruction\main.cpp(295): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
   Reconstruction.vcxproj -> E:\firework_reconstrction\Reconstruction\Debug\Reconstruction.exe

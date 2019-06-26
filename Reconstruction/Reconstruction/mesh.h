@@ -19,6 +19,19 @@ struct Vertex {
     glm::vec3 Tangent;
     // bitangent
     glm::vec3 Bitangent;
+	// color
+	glm::vec3 Ka;
+	glm::vec3 Kd;
+	glm::vec3 Ks;
+};
+
+struct Material {
+	// 材质颜色光照
+	glm::vec4 Ka;
+	// 漫反射
+	glm::vec4 Kd;
+	// 镜面反射
+	glm::vec4 Ks;
 };
 
 struct Texture {
@@ -35,6 +48,9 @@ public:
     vector<Texture> textures;
     unsigned int VAO;
 
+	//Material mats;
+	//unsigned int uniformBlockIndex;
+
     /*  Functions  */
     // constructor
 	// 使用构造器的参数设置类的公有变量
@@ -43,6 +59,7 @@ public:
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
+		//this->mats = mat;
 
         // now that we have all the required data, set the vertex buffers and its attribute pointers.
         setupMesh();
@@ -79,6 +96,7 @@ public:
         
         // draw mesh
         glBindVertexArray(VAO);
+		//glBindBufferRange(GL_UNIFORM_BUFFER, 0, uniformBlockIndex, 0, sizeof(Material));
 		//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		//实例化绘制，需要给出绘制的个数
 		glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, amount);
@@ -100,6 +118,7 @@ private:
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
+		//glGenBuffers(1, &uniformBlockIndex);
 
         glBindVertexArray(VAO);
         // load data into vertex buffers
@@ -108,6 +127,8 @@ private:
         // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
         // again translates to 3/2 floats which translates to a byte array.
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
+		//glBindBuffer(GL_UNIFORM_BUFFER, uniformBlockIndex);
+		//glBufferData(GL_UNIFORM_BUFFER, sizeof(mats), (void*)(&mats), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
@@ -128,6 +149,16 @@ private:
         // vertex bitangent
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+
+		// Color
+		// vertex bitangent
+		glEnableVertexAttribArray(8);
+		glVertexAttribPointer(8, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Ka));
+		glEnableVertexAttribArray(9);
+		glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Kd));
+		glEnableVertexAttribArray(8);
+		glVertexAttribPointer(10, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Ks));
+
 
         glBindVertexArray(VAO);
     }

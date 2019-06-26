@@ -55,16 +55,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="1.model_loading.fs">
+    <None Include="firework.fs">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="1.model_loading.vs">
+    <None Include="firework.vs">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="insert.vs">
+    <None Include="castle.fs">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="insert.fs">
+    <None Include="castle.vs">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

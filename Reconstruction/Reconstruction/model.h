@@ -90,6 +90,17 @@ private:
         vector<unsigned int> indices;
         vector<Texture> textures;
 
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+		aiColor3D color;
+		// 读取mtl文件顶点颜色
+		material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+		glm::vec3 tmp_Ka = glm::vec3(color.r, color.g, color.b);
+		material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+		glm::vec3 tmp_Kd = glm::vec3(color.r, color.g, color.b);
+	    material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+		glm::vec3 tmp_Ks = glm::vec3(color.r, color.g, color.b);
+
         // Walk through each of the mesh's vertices
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
@@ -128,7 +139,9 @@ private:
             //vector.y = mesh->mBitangents[i].y;
             //vector.z = mesh->mBitangents[i].z;
            // vertex.Bitangent = vector;
-
+			vertex.Ka = tmp_Ka;
+			vertex.Kd = tmp_Kd;
+			vertex.Ks = tmp_Ks;
 			// 存入顶点数据结构
             vertices.push_back(vertex);
         }
@@ -141,7 +154,17 @@ private:
                 indices.push_back(face.mIndices[j]);
         }
         // process materials
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
+        // aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex]; 
+		//Material mat;
+		//aiColor3D color;
+
+		// 读取mtl文件顶点颜色
+		//material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+		//mat.Ka = glm::vec4(color.r, color.g, color.b, 1.0);
+		//material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+		//mat.Kd = glm::vec4(color.r, color.g, color.b, 1.0);
+		//material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+		//mat.Ks = glm::vec4(color.r, color.g, color.b, 1.0);
         // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
         // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
         // Same applies to other texture as the following list summarizes:

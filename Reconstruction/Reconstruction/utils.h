@@ -10,8 +10,8 @@
 #include <io.h>
 
 // 查看重建效果需要修改的一些参数
-string shape = "e_shape1";
-bool is_Interpolation = true;
+string shape = "real2";
+bool is_Interpolation = false;
 bool is_Screenshot = false;
 bool is_SavePointsToTxt = false;
 const int insert_num = 3;// 插值点数
@@ -34,7 +34,7 @@ void get_3D_param(glm::mat4 inverse_projection, int num, vector<glm::vec3>& m_po
 	ss << num;
 	string num_str = ss.str();
 	string rgb_path = "./data/" + shape + "/rgb/" + num_str + ".png";
-	string depth_path = "./data/" + shape + "/depth_L/" + num_str + ".png";
+	string depth_path = "./data/" + shape + "/depth/" + num_str + ".png";
 	Mat img = imread(rgb_path); // 原始rgb图，获取颜色信息
 
 	Mat dpt_use = imread(depth_path); // 获取深度数据
@@ -250,15 +250,15 @@ glm::vec3 getCameraRotatePoint(glm::vec3 camPos, float theta, glm::vec3 center) 
 }
 
 // 更新相机位置
-float total_angle = PI / 12;
+float total_angle = PI / 11.0;
 float cur_angle = 0.0;
 float flag = 1.0;
 void updateCamera(Camera& camera) {
 	// 相机实时旋转
 	glm::vec3 center = glm::vec3(0.0, 0.0, 5.0); // 设置旋转中心
 	
-	//float theta = 0.0; //不旋转
-	float theta = 0.04; // 之前是查看45度效果
+	float theta = 0.0; //不旋转
+	//float theta = 0.05; // 之前是查看0.045度效果
 	cur_angle += flag * theta;
 	if (cur_angle > total_angle || cur_angle < -total_angle) {
 		flag = -1.0 * flag;

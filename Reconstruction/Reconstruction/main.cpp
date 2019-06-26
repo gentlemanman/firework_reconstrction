@@ -72,17 +72,18 @@ int main()
 	glCullFace(GL_BACK);
 
 	// build and compile shaders
-	Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
-	//Shader insertShader("insert.vs", "insert.fs");
+	Shader ourShader("firework.vs", "firework.fs");
+	Shader castleShader("castle.vs", "castle.fs");
 
 	// load models
 	Model ourModel("obj/ball/1.obj"); // 模型
+	Model castleModel("obj/castle/my.obj");
 
 	// 一、开始处理原始数据，获取位置和颜色
 	int wid = 480, height = 480;
 	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)wid / (float)height, CAM_NEAR, CAM_FAR);
 	glm::mat4 inverse_projection = glm::inverse(projection);
-	const int total_frames = 40; // 总帧数
+	const int total_frames = 5; // 总帧数
 	const int start_idx = 0; // 重建帧的开始	
 	cout << "开始的索引:" << start_idx << "  总共的帧数:" << total_frames << endl;
 	vector<vector<point_3D>> frames_points;
@@ -130,7 +131,7 @@ int main()
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
-		Sleep(50);
+		// Sleep(100);
 		// 由于每一帧的数据传递不一样，需要把数据传递放到渲染循环中
 		int cur_amount = frames_amount[cur_frame];
 		glm::mat4* cur_modelMatrices = frames_modelMatrices[cur_frame];
@@ -173,7 +174,7 @@ int main()
 		// 更新相机位置从不同角度观察重建的效果
 		if (first_frame) {
 			// first_frame = false;
-			updateCamera(camera);
+			// updateCamera(camera);
 		}
 		//cout << "FPS:" << 1 / deltaTime<< endl;
 		// per-frame time logic
@@ -189,22 +190,36 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// don't forget to enable shader before setting uniforms
+		
 		ourShader.use();
+		
 		
 		// view/projection transformations
 		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, CAM_NEAR, CAM_FAR);
 		glm::mat4 view = camera.GetViewMatrix();
 		ourShader.setMat4("projection", projection); 
 		ourShader.setMat4("view", view);
-		//绘制
+
+		//绘制烟花
 		for (unsigned int i = 0; i < ourModel.meshes.size(); i++) {
 			glBindVertexArray(ourModel.meshes[i].VAO);
 			glDrawElementsInstanced(GL_TRIANGLES, ourModel.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, cur_amount);
 			glBindVertexArray(0);
-		}		
-		
+		}
+				
+		castleShader.use();
+		//绘制城堡
+		castleShader.setMat4("projection", projection);
+		castleShader.setMat4("view", view);
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(-1, -4, 4)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));	// it's a bit too big for our scene, so scale it down
+		model = glm::rotate(model, glm::radians(150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		castleShader.setMat4("model", model);
+		castleModel.Draw(castleShader);
+
 		// opencv: 显示重建的当前帧
-		imshow("window", rgbsMat[cur_frame]);
+		// imshow("window", rgbsMat[cur_frame]);
 		// glfw:渲染出当前帧
 		glfwSwapBuffers(window);
 		glfwPollEvents();

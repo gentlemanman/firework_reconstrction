@@ -40,8 +40,8 @@ void ProcessPoints::EasyPointsInsertIdx() {
 		vector<int> insert_idx;
 		MyPoint query = my_points_pos_[i];
 		// vector<int> knn_idx = kdtree.knnSearch(query, 10);
-		double r = 0.048;
-		vector<int> knn_idx = kdtree.radiusSearch(query, r);
+		// double r = 0.048;
+		vector<int> knn_idx = kdtree.radiusSearch(query, Radius);
 		if(knn_idx.size() > 5)
 			knn_idx.erase(knn_idx.begin(), knn_idx.begin() + 5);
 		/*
